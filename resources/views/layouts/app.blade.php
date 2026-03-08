@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" id="htmlTheme" class="theme-dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Ellyssa FM')</title>
+
+    <!-- Favicon (logo) -->
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('logo.png') }}">
 
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -14,25 +18,34 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        /* ===== THÈMES (dark par défaut) ===== */
         body {
+    font-family: 'Poppins', sans-serif;
+    transition: background 0.4s ease, color 0.3s ease;
+}
+        html.theme-dark body {
     background: linear-gradient(135deg, #0f172a 0%, #3cff9e 100%) fixed;
     color: #1f2937;
-    font-family: 'Poppins', sans-serif;
-    /* Ajout d'oscillations radio en SVG overlay */
     background-image:
         url('data:image/svg+xml;utf8,<svg width="100%" height="220" viewBox="0 0 1440 220" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 120 Q 180 60 360 120 T 720 120 T 1080 120 T 1440 120 V220 H0Z" fill="rgba(60,255,158,0.18)"/><path d="M0 140 Q 180 80 360 140 T 720 140 T 1080 140 T 1440 140 V220 H0Z" fill="rgba(60,255,158,0.12)"/></svg>'),
         linear-gradient(135deg, #0f172a 0%, #3cff9e 100%);
     background-repeat: no-repeat;
     background-position: top center;
     background-size: 100% 220px, cover;
-    opacity: 1;
+}
+        html.theme-light body {
+    background: #e2e8f0;
+    color: #0f172a;
+    background-image: none;
 }
 
         /* ===== NAVBAR ===== */
         .main-navbar {
-            background: #0f172a;
             padding: 15px 25px;
+            transition: background 0.4s ease;
         }
+        html.theme-dark .main-navbar { background: #0f172a; }
+        html.theme-light .main-navbar { background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
 
         .navbar-container {
             display: flex;
@@ -319,14 +332,16 @@
     overflow: hidden;
 }
 
-.back-banner img {
+.back-banner img,
+.back-banner video {
     width: 100%;
     height: auto;
     display: block;
 }
 
 /* Effet léger premium (sans flou) */
-.back-banner:hover img {
+.back-banner:hover img,
+.back-banner:hover video {
     transform: scale(1.03);
 }
 
@@ -351,13 +366,12 @@
     cursor: pointer;
     padding: 8px 12px;
     border-radius: 8px;
-    transition: background 0.3s ease;
-    color: #ffffff;  
+    transition: background 0.3s ease, color 0.3s ease;
 }
-
-.menu-toggle:hover {
-    background: rgb(0, 0, 0);
-}
+html.theme-dark .menu-toggle { color: #ffffff; }
+html.theme-dark .menu-toggle:hover { background: rgb(0, 0, 0); }
+html.theme-light .menu-toggle { color: #0f172a; }
+html.theme-light .menu-toggle:hover { background: #f1f5f9; }
 
 /* ===== DROPDOWN MENU ===== */
 .dropdown-menu {
@@ -439,6 +453,43 @@
     }
 }
 
+/* ===== BOUTON DARK MODE ===== */
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.4);
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+html.theme-light .theme-toggle {
+    border-color: rgba(15,23,42,0.2);
+    color: #0f172a;
+}
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.15);
+}
+html.theme-light .theme-toggle:hover {
+    background: #f1f5f9;
+}
+
+/* Mode clair : liens catégories */
+html.theme-light .category-link {
+    background: #fff;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+}
+html.theme-light .category-link:hover {
+    background: #f1f5f9;
+    border-color: #3cff9e;
+}
+
 <!-- ===== LOADER PREMIUM ===== -->
 <div class="loader-premium" id="loaderPremium">
     <div class="loader-icon"></div>
@@ -485,8 +536,11 @@
             </div>
         </div>
 
-        <!-- AUTH -->
+        <!-- AUTH + DARK MODE -->
         <div class="navbar-right">
+            <button type="button" class="theme-toggle" id="themeToggle" aria-label="Mode sombre / clair" title="Changer le thème">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
             @auth
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
@@ -503,8 +557,8 @@
 </header>
 
 <div class="back-banner">
-    <img src="{{ asset('back.jpg') }}">
-    </div>
+    <video src="https://elyssafm.tn/video/introfinal.mp4" autoplay loop muted playsinline></video>
+</div>
 
 <!-- ===== CONTENT ===== -->
 <div class="container fade-in-content" id="mainContent">
@@ -538,6 +592,32 @@ window.addEventListener("click", function(e) {
         document.getElementById("dropdownMenu").style.display = "none";
     }
 });
+
+/* ===== DARK MODE ===== */
+(function() {
+    var KEY = 'ellyssa-theme';
+    var html = document.getElementById('htmlTheme');
+    var btn = document.getElementById('themeToggle');
+    var icon = document.getElementById('themeIcon');
+    function isDark() { return html.classList.contains('theme-dark'); }
+    function setTheme(dark) {
+        html.classList.remove('theme-dark', 'theme-light');
+        html.classList.add(dark ? 'theme-dark' : 'theme-light');
+        if (icon) {
+            icon.className = dark ? 'fas fa-moon' : 'fas fa-sun';
+        }
+        try { localStorage.setItem(KEY, dark ? 'dark' : 'light'); } catch (e) {}
+    }
+    function toggleTheme() {
+        setTheme(!isDark());
+    }
+    btn.addEventListener('click', toggleTheme);
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    if (saved === 'light') setTheme(false);
+    else if (saved === 'dark') setTheme(true);
+    else setTheme(true);
+})();
 </script>
 </body>
 </html>
