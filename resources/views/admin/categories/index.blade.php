@@ -1,67 +1,47 @@
 @extends('layouts.app')
 
+@section('title', 'Gestion des catégories')
+@section('styles')
+@include('admin.partials.admin-list-styles')
+@endsection
+
 @section('content')
-<div style="max-width:600px; margin:30px auto; background:rgba(255,255,255,0.05); padding:30px; border-radius:12px; backdrop-filter:blur(8px);">
+<div class="admin-list-page">
+    <a href="{{ route('admin.dashboard') }}" class="admin-back-link">
+        <i class="fas fa-arrow-left"></i> Retour au dashboard
+    </a>
 
-    <h2 style="margin-bottom:20px; font-size:26px; font-weight:600; color:#3cff9e;">
-        ➕ Ajouter une catégorie
-    </h2>
+    <div class="admin-card" style="max-width:560px;">
+        <h2 class="admin-card-title">Ajouter une catégorie</h2>
+        <form method="POST" action="{{ route('admin.categories.store') }}">
+            @csrf
+            <input type="text" name="name" placeholder="Nom de la catégorie" required class="admin-form-input">
+            <button type="submit" class="admin-btn-primary" style="width:100%; justify-content:center;">
+                <i class="fas fa-folder-plus"></i> Ajouter la catégorie
+            </button>
+        </form>
 
-    <form method="POST" action="{{ route('admin.categories.store') }}">
-        @csrf
-        <div style="margin-bottom:15px;">
-            <input type="text" 
-                   name="name" 
-                   placeholder="Nom catégorie" 
-                   required
-                   style="width:100%; padding:12px; border-radius:8px; border:none; outline:none; background:rgba(255,255,255,0.1); color:#fff;">
-        </div>
+        <hr class="admin-divider">
 
-        <button type="submit" style="
-            width:100%;
-            padding:14px;
-            border:none;
-            border-radius:10px;
-            background:#3cff9e;
-            color:#000;
-            font-weight:600;
-            cursor:pointer;
-            transition:0.3s;
-        " onmouseover="this.style.background='#2fd88a'" onmouseout="this.style.background='#3cff9e'">
-            📂 Ajouter la catégorie
-        </button>
-    </form>
-
-    <hr style="border-color:rgba(255,255,255,0.2); margin:30px 0;">
-
-    <h3 style="margin-bottom:15px; font-size:20px; color:#fff;">
-        📂 Catégories existantes
-    </h3>
-
-    <ul style="list-style:none; padding-left:0;">
-        @foreach($categories as $category)
-            <li style="padding:10px 15px; margin-bottom:10px; background:rgba(255,255,255,0.1); border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+        <h3 class="admin-card-title" style="font-size:1.1rem;">Catégories existantes</h3>
+        <ul class="admin-list-items">
+            @foreach($categories as $category)
+            <li class="admin-list-item">
                 <span>{{ $category->name }}</span>
-                <!-- Bouton supprimer (optionnel) -->
-                <form method="POST" action="{{ route('admin.categories.destroy', $category) }}">
+                <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" style="display:inline;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" style="
-                        background:#ff4d4f;
-                        color:#fff;
-                        border:none;
-                        padding:5px 10px;
-                        border-radius:6px;
-                        cursor:pointer;
-                        font-size:12px;
-                        transition:0.3s;
-                    " onmouseover="this.style.background='#e33b3f'" onmouseout="this.style.background='#ff4d4f'">
-                        ❌ Supprimer
+                    <button type="submit" class="admin-btn admin-btn-danger" onclick="return confirm('Supprimer cette catégorie ?');">
+                        <i class="fas fa-trash"></i> Supprimer
                     </button>
                 </form>
             </li>
-        @endforeach
-    </ul>
+            @endforeach
+        </ul>
 
+        @if($categories->isEmpty())
+            <p class="admin-empty" style="margin:0; padding:1rem 0;">Aucune catégorie.</p>
+        @endif
+    </div>
 </div>
 @endsection

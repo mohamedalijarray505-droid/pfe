@@ -1,40 +1,48 @@
 @extends('layouts.app')
 
-@section('content')
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-    <h2>👥 Liste des utilisateurs</h2>
-</div>
+@section('title', 'Liste des utilisateurs')
+@section('styles')
+@include('admin.partials.admin-list-styles')
+@endsection
 
-@if($users->count())
-    <div style="overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+@section('content')
+<div class="admin-list-page">
+    <div class="admin-list-header">
+        <h2 class="admin-list-title">Utilisateurs</h2>
+    </div>
+
+    @if($users->count())
+    <div class="admin-table-wrap">
+        <table class="admin-table">
             <thead>
-                <tr style="background:#0b3d2e; color:#3cff9e; text-align:left;">
-                    <th style="padding:12px;">#</th>
-                    <th style="padding:12px;">Nom</th>
-                    <th style="padding:12px;">Email</th>
-                    <th style="padding:12px;">Rôle</th>
-                    <th style="padding:12px;">Actions</th>
+                <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($users as $index => $user)
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                    <td style="padding:12px;">{{ $index + 1 }}</td>
-                    <td style="padding:12px;">👤 {{ $user->name }}</td>
-                    <td style="padding:12px;">📧 {{ $user->email }}</td>
-                    <td style="padding:12px;">
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $user->name }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td>
                         @if($user->role === 'admin')
-                            🔑 Admin
+                            <span class="admin-badge admin-badge-approved">Admin</span>
                         @else
-                            👤 Utilisateur
+                            <span class="admin-badge admin-badge-pending">Utilisateur</span>
                         @endif
                     </td>
-                    <td style="padding:12px;">
+                    <td>
                         <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button style="background:#ff4d6d; color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">🗑 Supprimer</button>
+                            <button type="submit" class="admin-btn admin-btn-danger" onclick="return confirm('Supprimer cet utilisateur ?');">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
                         </form>
                     </td>
                 </tr>
@@ -42,7 +50,8 @@
             </tbody>
         </table>
     </div>
-@else
-    <p style="margin-top:20px; color:rgba(255,255,255,0.7);">Aucun utilisateur disponible.</p>
-@endif
+    @else
+        <p class="admin-empty">Aucun utilisateur.</p>
+    @endif
+</div>
 @endsection

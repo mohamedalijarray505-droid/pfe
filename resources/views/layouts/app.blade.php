@@ -445,6 +445,7 @@
 </div>
 
     </style>
+    @yield('styles')
 </head>
 <body>
 
@@ -459,9 +460,10 @@
     </button>
 
     <div class="dropdown-menu" id="dropdownMenu">
-        <a href="#">ميثاق الشرف</a>
-        <a href="#">الخط التحريري</a>
-        <a href="#">القانون الداخلي</a>
+        <a href="{{ route('pages.about') }}">من نحن</a>
+        <a href="{{ route('pages.charter') }}">ميثاق الشرف</a>
+        <a href="{{ route('pages.editorial') }}">الخط التحريري</a>
+        <a href="{{ route('pages.regulations') }}">القانون الداخلي</a>
     </div>
 </div>
 

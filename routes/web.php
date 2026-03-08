@@ -16,8 +16,14 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\HomeController;
 use App\Models\User;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\PageController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.public');
+
+Route::get('/charte-honneur', [PageController::class, 'charter'])->name('pages.charter');
+Route::get('/ligne-editoriale', [PageController::class, 'editorialLine'])->name('pages.editorial');
+Route::get('/reglement-interieur', [PageController::class, 'internalRegulations'])->name('pages.regulations');
+Route::get('/qui-sommes-nous', [PageController::class, 'about'])->name('pages.about');
 
 Route::get('/welcome', function () {
     return view('welcome');

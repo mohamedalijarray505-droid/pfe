@@ -1,27 +1,41 @@
 @extends('layouts.app')
 
 @section('title', 'Notifications admin')
+@section('styles')
+@include('admin.partials.admin-list-styles')
+@endsection
 
 @section('content')
-<h1 style="margin-bottom:24px;">🔔 Notifications reçues</h1>
-@if(auth()->user()->isAdmin())
-    @if(auth()->user()->notifications->count())
-        <div style="background:#fff; border-radius:12px; box-shadow:0 4px 18px #3cff9e22; padding:24px;">
-            @foreach(auth()->user()->notifications as $notif)
-                <div style="border-bottom:1px solid #eee; padding:14px 0; display:flex; align-items:center; gap:18px;">
-                    <div style="font-size:22px; color:#3cff9e;"><i class="fas fa-envelope"></i></div>
-                    <div style="flex:1;">
-                        <strong>{{ $notif->data['name'] ?? 'Utilisateur' }}</strong> <span style="color:#aaa; font-size:13px;">({{ $notif->data['email'] ?? '' }})</span>
-                        <div style="font-size:13px; color:#0f172a; margin:4px 0;">{{ $notif->data['content'] ?? '' }}</div>
-                        <span style="font-size:12px; color:#aaa;">{{ $notif->created_at->diffForHumans() }}</span>
+<div class="admin-list-page">
+    <div class="admin-list-header">
+        <h2 class="admin-list-title">Notifications reçues</h2>
+        <a href="{{ route('admin.dashboard') }}" class="admin-back-link" style="margin-bottom:0;">
+            <i class="fas fa-arrow-left"></i> Dashboard
+        </a>
+    </div>
+
+    @if(auth()->user()->isAdmin())
+        @if(auth()->user()->notifications->count())
+            <div class="admin-card" style="max-width:100%;">
+                @foreach(auth()->user()->notifications as $notif)
+                <div class="admin-notif-item">
+                    <div class="admin-notif-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="admin-notif-body">
+                        <strong>{{ $notif->data['name'] ?? 'Utilisateur' }}</strong>
+                        <span class="admin-notif-email">({{ $notif->data['email'] ?? '' }})</span>
+                        <div class="admin-notif-content">{{ $notif->data['content'] ?? '' }}</div>
+                        <span class="admin-notif-time">{{ $notif->created_at->diffForHumans() }}</span>
                     </div>
                 </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
+        @else
+            <p class="admin-empty">Aucune notification reçue.</p>
+        @endif
     @else
-        <p>Aucune notification reçue.</p>
+        <p class="admin-empty">Vous n'êtes pas administrateur.</p>
     @endif
-@else
-    <p>Vous n'êtes pas administrateur.</p>
-@endif
+</div>
 @endsection
