@@ -44,10 +44,10 @@ class VideoController extends Controller
     // Charger les relations
     $video->load(['reactions', 'comments']);
 $comments = $video->comments()
-                      ->where('status', 'approved')
-                      ->with('user')
-                      ->latest()
-                      ->get();
+    ->where('status', 'approved')
+    ->with('user')
+    ->latest()
+    ->get();
 
 
     return view('videos.show', compact('video' , 'comments'));

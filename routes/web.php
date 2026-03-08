@@ -15,6 +15,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\HomeController;
 use App\Models\User;
+use App\Http\Controllers\ContactController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.public');
 
@@ -43,6 +44,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // ===== DASHBOARD =====
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])
         ->name('dashboard');
+
+    Route::get('/notifications', [App\Http\Controllers\Admin\AdminNotificationController::class, 'index'])
+        ->name('notifications.index');
 
     // ===== USERS =====
     Route::get('/users', [AdminUserController::class, 'index'])
@@ -96,6 +100,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
             'support' => \App\Models\Reaction::where('reaction', 'support')->count(),
         ]);
     })->name('stats.reactions');
+
+    Route::get('/admin/messages', [App\Http\Controllers\Admin\MessageAdminController::class, 'index'])->name('admin.messages.index');
+    Route::get('/admin/messages/{message}', [App\Http\Controllers\Admin\MessageAdminController::class, 'show'])->name('admin.messages.show');
+
 });
 
  Route::get('/categories/{category}', [CategoryController::class, 'show']
@@ -111,3 +119,6 @@ Route::middleware('auth')->group(function () {
 Route::post('/videos/{video}/comment', [CommentController::class, 'store']);
 Route::get('/videos/{video}', [VideoController::class, 'show'])
     ->name('videos.show');
+
+// Ajout d'une route pour envoyer un message de contact
+Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');

@@ -15,9 +15,17 @@
 
     <style>
         body {
-    background: #f9fafb;   /* blanc moderne légèrement doux */
+    background: linear-gradient(135deg, #0f172a 0%, #3cff9e 100%) fixed;
     color: #1f2937;
     font-family: 'Poppins', sans-serif;
+    /* Ajout d'oscillations radio en SVG overlay */
+    background-image:
+        url('data:image/svg+xml;utf8,<svg width="100%" height="220" viewBox="0 0 1440 220" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 120 Q 180 60 360 120 T 720 120 T 1080 120 T 1440 120 V220 H0Z" fill="rgba(60,255,158,0.18)"/><path d="M0 140 Q 180 80 360 140 T 720 140 T 1080 140 T 1440 140 V220 H0Z" fill="rgba(60,255,158,0.12)"/></svg>'),
+        linear-gradient(135deg, #0f172a 0%, #3cff9e 100%);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: 100% 220px, cover;
+    opacity: 1;
 }
 
         /* ===== NAVBAR ===== */
@@ -391,6 +399,51 @@
     }
 }
 
+/* ===== LOADER PREMIUM ===== */
+.loader-premium {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #3cff9e 0%, #0f172a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease;
+}
+.loader-premium .loader-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-top: 6px solid #3cff9e;
+    animation: spinLoader 1s linear infinite;
+    box-shadow: 0 0 40px #3cff9e44;
+}
+@keyframes spinLoader {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* Animation d'apparition du contenu */
+.fade-in-content {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInContent 1.2s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes fadeInContent {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+<!-- ===== LOADER PREMIUM ===== -->
+<div class="loader-premium" id="loaderPremium">
+    <div class="loader-icon"></div>
+</div>
+
     </style>
 </head>
 <body>
@@ -452,7 +505,7 @@
     </div>
 
 <!-- ===== CONTENT ===== -->
-<div class="container">
+<div class="container fade-in-content" id="mainContent">
     @yield('content')
 </div>
 <script>

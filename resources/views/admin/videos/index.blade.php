@@ -39,7 +39,7 @@
                     <td style="padding:12px 15px;">{{ $video->love_count ?? 0 }}</td>
                     <td style="padding:12px 15px;">{{ $video->sad_count ?? 0 }}</td>
                     <td style="padding:12px 15px;">{{ $video->angry_count ?? 0 }}</td>
-                     <td style="padding:12px 15px;">{{ $video->support ?? 0 }}</td>
+                    <td style="padding:12px 15px;">{{ $video->support_count ?? 0 }}</td>
                     <td style="padding:12px 15px;">
 
                         <form method="POST" action="{{ route('admin.videos.toggle', $video) }}">

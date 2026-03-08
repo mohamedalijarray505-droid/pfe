@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\Video;
 use App\Models\Category;
 use App\Models\Comment;
-
+use Illuminate\Support\Facades\Auth;
 
 class AdminDashboardController extends Controller
 {
@@ -16,14 +16,27 @@ class AdminDashboardController extends Controller
         $usersCount = User::count();
         $videosCount = Video::count();
         $categoriesCount = Category::count();
-       $comments = Comment::with(['user', 'video'])
-        ->latest()
-        ->paginate(20);
+        // Dernier commentaire pour dashboard
+        $lastComment = Comment::with(['user', 'video'])
+            ->latest()
+            ->first();
+        // Notifications admin
+        $notifications = Auth::user()->notifications()->latest()->take(5)->get();
         return view('admin.dashboard', compact(
             'usersCount',
             'videosCount',
             'categoriesCount',
-            'comments',
+            'lastComment',
+            'notifications',
         ));
+    }
+
+    // Page pour tous les commentaires
+    public function commentsIndex()
+    {
+        $comments = Comment::with(['user', 'video'])
+            ->latest()
+            ->paginate(20);
+        return view('admin.comments.index', compact('comments'));
     }
 }

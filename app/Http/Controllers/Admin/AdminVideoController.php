@@ -14,7 +14,7 @@ class AdminVideoController extends Controller
 {
    public function index()
 {
-    $videos = Video::withCount([
+   $videos = Video::withCount([
         'reactions as likes_count' => function ($q) {
             $q->where('reaction', 'like');
         },
@@ -27,7 +27,7 @@ class AdminVideoController extends Controller
         'reactions as angry_count' => function ($q) {
             $q->where('reaction', 'angry');
         },
-        'reactions as angry_count' => function ($q) {
+        'reactions as support_count' => function ($q) {
             $q->where('reaction', 'support');
         },
     ])->get();
